@@ -1,0 +1,710 @@
+SECTION 1 - INITIAL PROMPT: 
+
+I need to design a simple CLI task manager program in Python for my programming course. The program should allow users to add tasks, list all tasks, and remove specific task. Please provide pseudocode that only use basic Python concepts suitable for a beginner programming student - no advanced features. Follow a structured planning approach with clear steps (understand the problem, inputs/outputs, and pseudocode, etc.).
+
+AI RESPONSE:
+
+🧩 PROBLEM RESTATEMENT:
+
+Design a simple command-line task manager that allows users to:
+
+Add a new task
+View all tasks
+Remove a specific task by its number
+Continue running until the user chooses to exit
+
+📥 INPUTS / 📤 OUTPUTS:
+
+Inputs:
+
+User menu choices (add / list / remove / exit)
+Task descriptions (text)
+Task number to remove (integer)
+
+Outputs:
+
+Display of all tasks
+Confirmation messages after adding or removing tasks
+
+🧠 PSEUDOCODE
+
+FUNCTION display_menu():
+    DISPLAY "==== TASK MANAGER ===="
+    DISPLAY "1. Add Task"
+    DISPLAY "2. View All Tasks"
+    DISPLAY "3. Remove Task"
+    DISPLAY "4. Exit"
+
+FUNCTION add_task(tasks):
+    DISPLAY "Enter new task:"
+    GET task_description FROM input
+    ADD task_description TO tasks
+    DISPLAY "Task added successfully."
+
+FUNCTION view_tasks(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks available."
+    ELSE:
+        DISPLAY "Your Tasks:"
+        SET counter = 1
+        FOR each task IN tasks:
+            DISPLAY counter + ". " + task
+            INCREMENT counter BY 1
+
+FUNCTION remove_task(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks to remove."
+        RETURN
+    CALL view_tasks(tasks)
+    DISPLAY "Enter the task number to remove:"
+    GET number_input FROM input
+    IF number_input IS DIGIT:
+        SET task_number = CONVERT number_input TO integer
+        IF task_number >= 1 AND task_number <= LENGTH of tasks:
+            REMOVE task at index (task_number - 1)
+            DISPLAY "Task removed successfully."
+        ELSE:
+            DISPLAY "Invalid task number."
+    ELSE:
+        DISPLAY "Please enter a valid number."
+
+MAIN PROGRAMME:
+    CREATE empty list tasks
+    WHILE True:
+        CALL display_menu()
+        DISPLAY "Enter your choice (1-4):"
+        GET choice FROM input
+
+        IF choice == "1":
+            CALL add_task(tasks)
+        ELIF choice == "2":
+            CALL view_tasks(tasks)
+        ELIF choice == "3":
+            CALL remove_task(tasks)
+        ELIF choice == "4":
+            DISPLAY "Exiting Task Manager. Goodbye!"
+            BREAK
+        ELSE:
+            DISPLAY "Invalid option. Please choose again."
+
+
+Course constraint applied: I applied the Six-Step Planning Methodology from Week 2 - Personalising Data: The User Preferences Project to guide the AI for creating pseudocode.
+
+SECTION 1 - FIRST REFINEMENT:
+
+I noticed that the pseudocode include messages such as "Please enter a valid number" when removing tasks. However, there is no proper error handling using try/except blocks. Please refine the pseudocode to include specific error handling with try/except for common errors such as invalid user input, or when a users tries to remove a task that doesn't exist.
+
+AI RESPONSE:
+
+Nice catch — good idea to make the pseudocode explicitly use try / except so the CLI doesn’t crash and gives friendly error messages. Below is the updated pseudocode block that uses only beginner-level constructs and adds specific exception handling for the common failure modes you mentioned.
+
+FUNCTION display_menu():
+    DISPLAY "==== TASK MANAGER ===="
+    DISPLAY "1. Add Task"
+    DISPLAY "2. View All Tasks"
+    DISPLAY "3. Remove Task"
+    DISPLAY "4. Exit"
+
+FUNCTION add_task(tasks):
+    DISPLAY "Enter new task:"
+    GET task_description FROM input
+    IF task_description.strip() == "":
+        DISPLAY "Task cannot be empty."
+        RETURN
+    ADD task_description TO tasks
+    DISPLAY "Task added successfully."
+
+FUNCTION view_tasks(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks available."
+    ELSE:
+        DISPLAY "Your Tasks:"
+        SET counter = 1
+        FOR each task IN tasks:
+            DISPLAY counter + ". " + task
+            INCREMENT counter BY 1
+
+FUNCTION remove_task(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks to remove."
+        RETURN
+    CALL view_tasks(tasks)
+    DISPLAY "Enter the task number to remove:"
+    GET number_input FROM input
+
+    # Handle conversion and index errors with try/except
+    TRY:
+        SET task_number = CONVERT number_input TO integer
+    EXCEPT ValueError:
+        DISPLAY "Invalid input. Please enter a whole number."
+        RETURN
+
+    # Check valid range and remove safely
+    TRY:
+        IF task_number < 1 OR task_number > LENGTH of tasks:
+            RAISE IndexError  # intentionally trigger the handler below
+        # list indexes are zero-based
+        SET removed_task = REMOVE and RETURN item at index (task_number - 1) FROM tasks
+        DISPLAY "Removed task: " + removed_task
+    EXCEPT IndexError:
+        DISPLAY "That task number does not exist. Please choose a number shown in the list."
+
+MAIN PROGRAMME:
+    CREATE empty list tasks
+
+    WHILE True:
+        CALL display_menu()
+        DISPLAY "Enter your choice (1-4):"
+        GET choice FROM input
+
+        # Basic validation of menu choice
+        IF choice == "1":
+            CALL add_task(tasks)
+        ELIF choice == "2":
+            CALL view_tasks(tasks)
+        ELIF choice == "3":
+            CALL remove_task(tasks)
+        ELIF choice == "4":
+            DISPLAY "Exiting Task Manager. Goodbye!"
+            BREAK
+        ELSE:
+            DISPLAY "Invalid option. Please choose 1, 2, 3 or 4."
+
+        # Optional: wrap whole loop iteration to avoid unexpected crashes
+        TRY:
+            # (No extra code here in simple pseudocode)
+            PASS
+        EXCEPT Exception:
+            DISPLAY "An unexpected error occurred. Please try again."
+
+Course constraint applied: This refinement applied basic error handling concepts (Common errors in Python) and the use of try/except blocks from Week 11 - Files and Exception Handling.
+
+SECTION 1 - SECOND REFINEMENT:
+
+Please further enhance the pseudocode by adding new, simple features that improve user experience, such as: add an option to delete all tasks at once, an option to mark a task as done, and a confirmation to save the task before exiting.
+
+AI RESPONSE:
+
+Excellent — these are very suitable beginner-level user-experience improvements that can still be implemented using only the basic Python techniques taught in your course (loops, lists, conditionals, functions, and simple error handling).
+
+Here’s your refined and enhanced pseudocode as one coherent chunk — readable, beginner-friendly, and robust with proper input validation and error handling.
+
+FUNCTION display_menu():
+    DISPLAY "==== TASK MANAGER ===="
+    DISPLAY "1. Add Task"
+    DISPLAY "2. View All Tasks"
+    DISPLAY "3. Remove Task"
+    DISPLAY "4. Remove All Tasks"
+    DISPLAY "5. Mark Task as Done"
+    DISPLAY "6. Exit"
+
+FUNCTION add_task(tasks):
+    DISPLAY "Enter new task description:"
+    GET task_description FROM input
+    IF task_description.strip() == "":
+        DISPLAY "Task cannot be empty."
+        RETURN
+    ADD {"description": task_description, "done": False} TO tasks
+    DISPLAY "Task added successfully."
+
+FUNCTION view_tasks(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks available."
+    ELSE:
+        DISPLAY "Your Tasks:"
+        SET counter = 1
+        FOR each task IN tasks:
+            IF task["done"] == True:
+                DISPLAY counter + ". " + task["description"] + " [DONE]"
+            ELSE:
+                DISPLAY counter + ". " + task["description"]
+            INCREMENT counter BY 1
+
+FUNCTION remove_task(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks to remove."
+        RETURN
+    CALL view_tasks(tasks)
+    DISPLAY "Enter the task number to remove:"
+    GET number_input FROM input
+    TRY:
+        SET task_number = CONVERT number_input TO integer
+    EXCEPT ValueError:
+        DISPLAY "Invalid input. Please enter a whole number."
+        RETURN
+    TRY:
+        IF task_number < 1 OR task_number > LENGTH of tasks:
+            RAISE IndexError
+        SET removed_task = REMOVE and RETURN item at index (task_number - 1) FROM tasks
+        DISPLAY "Removed task: " + removed_task["description"]
+    EXCEPT IndexError:
+        DISPLAY "That task number does not exist. Please choose a valid number."
+
+FUNCTION remove_all_tasks(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks to clear."
+        RETURN
+    DISPLAY "Are you sure you want to delete all tasks? (yes/no)"
+    GET confirmation FROM input
+    IF confirmation.lower() == "yes":
+        CLEAR tasks
+        DISPLAY "All tasks have been deleted."
+    ELSE:
+        DISPLAY "Operation cancelled."
+
+FUNCTION mark_task_done(tasks):
+    IF LENGTH of tasks == 0:
+        DISPLAY "No tasks available to mark."
+        RETURN
+    CALL view_tasks(tasks)
+    DISPLAY "Enter the task number to mark as done:"
+    GET number_input FROM input
+    TRY:
+        SET task_number = CONVERT number_input TO integer
+    EXCEPT ValueError:
+        DISPLAY "Invalid input. Please enter a whole number."
+        RETURN
+    TRY:
+        IF task_number < 1 OR task_number > LENGTH of tasks:
+            RAISE IndexError
+        SET tasks[task_number - 1]["done"] = True
+        DISPLAY "Task marked as done: " + tasks[task_number - 1]["description"]
+    EXCEPT IndexError:
+        DISPLAY "That task number does not exist."
+
+FUNCTION confirm_exit(tasks):
+    IF LENGTH of tasks > 0:
+        DISPLAY "Would you like to save your tasks before exiting? (yes/no)"
+        GET response FROM input
+        IF response.lower() == "yes":
+            DISPLAY "Saving tasks..."
+            # (In real program, this would write to a file, but here we just display)
+            DISPLAY "Tasks saved successfully!"
+    DISPLAY "Exiting Task Manager. Goodbye!"
+
+MAIN PROGRAMME:
+    CREATE empty list tasks
+
+    WHILE True:
+        CALL display_menu()
+        DISPLAY "Enter your choice (1-6):"
+        GET choice FROM input
+
+        IF choice == "1":
+            CALL add_task(tasks)
+        ELIF choice == "2":
+            CALL view_tasks(tasks)
+        ELIF choice == "3":
+            CALL remove_task(tasks)
+        ELIF choice == "4":
+            CALL remove_all_tasks(tasks)
+        ELIF choice == "5":
+            CALL mark_task_done(tasks)
+        ELIF choice == "6":
+            CALL confirm_exit(tasks)
+            BREAK
+        ELSE:
+            DISPLAY "Invalid option. Please choose between 1 and 6."
+
+        # Optional catch-all safeguard
+        TRY:
+            PASS
+        EXCEPT Exception:
+            DISPLAY "An unexpected error occurred. Please try again."
+
+Course constraint applied: This refinement applied conditionals and logical operators concepts from Week 3: Decisions, Decisions: Building a Weather Forecaster with Python Logic to create a functional menu system.
+
+SECTION 2 - ERROR ANALYSIS:
+
+Please analyse this chatbot code for a beginner programming student. Identify errors that a student would make, with a focus on name errors for variables and functions, and other simple programming mistakes.
+
+AI RESPONSE: 
+
+Perfect — this kind of exercise is excellent for helping beginner programming students understand common real-world mistakes in Python. Let’s go through your file step by step.
+
+🧩 Code Analysis: broken_task_manager.py
+🔹 1. Overview
+
+This is a simple task manager program that lets users:
+
+Add tasks
+Remove tasks
+List tasks
+
+However, the script currently contains multiple beginner-level errors, including:
+
+Typographical mistakes
+
+Wrong variable names
+Misspelled function names
+Logical issues in indexing
+
+We'll review each error, identify its type, explain why it happens, and provide a corrected version.
+
+🔍 Line-by-Line Error Analysis
+Error 1: Typo in variable name
+if index < len(tas):  # Error 1: typo
+
+❌ What’s wrong:
+
+The list is named tasks, but here it’s written as tas.
+
+Python will raise a NameError because tas is undefined.
+
+🧠 Error type:
+
+NameError — occurs when trying to use a variable that hasn’t been defined.
+
+✅ Correction:
+if index < len(tasks):
+
+Error 2: Wrong variable name in loop
+for i, t in enumerate(task):  # Error 2: wrong variable
+
+❌ What’s wrong:
+
+The loop should iterate through tasks, not task.
+
+task is not defined in this scope, so Python will again raise a NameError.
+
+🧠 Error type:
+
+NameError — using the wrong variable name inside the loop.
+
+✅ Correction:
+for i, t in enumerate(tasks):
+    print(f"{i+1}: {t}")
+
+Error 3: Misspelled function name
+list_task()  # Error 3: wrong function name
+
+❌ What’s wrong:
+
+The actual function is named list_tasks() (plural), but this call is missing the “s”.
+
+Python will raise a NameError because list_task() doesn’t exist.
+
+🧠 Error type:
+
+NameError — incorrect function name.
+
+✅ Correction:
+list_tasks()
+
+Other Minor Issues (Not marked but good to teach):
+🔸 Issue 1: Missing check for negative index
+if index < len(tasks):
+
+
+If the user accidentally provides a negative number (e.g., -1), Python will treat it as a valid index (the last element).
+For beginners, you may want to add a lower bound check.
+
+✅ Improved:
+
+if 0 <= index < len(tasks):
+
+🔸 Issue 2: Zero-based index confusion
+
+When displaying task numbers (starting from 1), users may think they should remove task “1” to delete the first item — but your program treats that as index 1 (the second task).
+This causes confusion.
+
+✅ Improvement:
+Subtract 1 when removing:
+
+remove_task(int(input("Enter task number: ")) - 1)
+
+🔸 Issue 3: No user input handling
+
+The program directly adds preset tasks. If expanded later for user input, you’ll need try/except blocks for input validation.
+
+Course constraint applied: I applied the advanced debugging techniques in Week 12 - Testing and Debugging.
+
+SECTION 2 - ERROR CORRECTION:
+
+Please provide the full, corrected version of this code using only basic Python techniques for beginner course. Include doctest examples for each function and suggest descriptive names for these test functions based on what they test.
+
+AI RESPONSE: 
+
+Got it! Here’s the fully corrected and beginner-friendly version of your provided broken_task_manager.py, using only basic Python techniques and including doctest examples for each function. I’ve also fixed all the original errors you highlighted.
+
+"""
+Corrected Simple Task Manager
+Uses only basic Python concepts suitable for a beginner course.
+"""
+
+tasks = []
+
+def add_task(task):
+    """
+    Add a task to the task list.
+
+    >>> tasks.clear()
+    >>> add_task("Buy milk")
+    'Added: Buy milk'
+    >>> tasks[-1]
+    'Buy milk'
+    """
+    tasks.append(task)
+    return f"Added: {task}"
+
+def remove_task(index):
+    """
+    Remove a task by its index (1-based).
+
+    >>> tasks.clear()
+    >>> add_task("Pay bills")
+    'Added: Pay bills'
+    >>> add_task("Walk dog")
+    'Added: Walk dog'
+    >>> remove_task(1)
+    'Removed: Pay bills'
+    >>> remove_task(5)
+    'Invalid index!'
+    """
+    try:
+        removed = tasks[index - 1]  # Correct index handling (1-based)
+        del tasks[index - 1]
+        return f"Removed: {removed}"
+    except IndexError:
+        return "Invalid index!"
+    except TypeError:
+        return "Please enter a valid number!"
+
+def list_tasks():
+    """
+    List all tasks in the task list.
+
+    >>> tasks.clear()
+    >>> add_task("Buy milk")
+    'Added: Buy milk'
+    >>> add_task("Pay bills")
+    'Added: Pay bills'
+    >>> list_tasks()
+    '1: Buy milk\\n2: Pay bills'
+    """
+    if not tasks:
+        return "No tasks available."
+    output = ""
+    for i, t in enumerate(tasks):  # Fixed variable name from 'task' to 'tasks'
+        output += f"{i+1}: {t}\n"
+    return output.strip()
+
+def main():
+    add_task("Buy milk")
+    add_task("Pay bills")
+    add_task("Walk dog")
+    
+    print("\nCurrent Tasks:")
+    print(list_tasks())
+    
+    print("\nRemoving Task 2:")
+    print(remove_task(2))
+    
+    print("\nUpdated Tasks:")
+    print(list_tasks())
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    main()
+
+SECTION 3 - ISSUE ANALYSIS
+
+Please review the current safe_weather_data_fetch() function using only error handling techniques taught in an introductory programming course (basic try/except only), focusing on generic exception handling, input validation, verification of data structure, and display meaningful error messages.
+
+AI RESPONSE: 
+
+Analysis (Beginner Course Perspective)
+
+Generic Exception Handling (try/except) ✅
+
+Wrapping the whole function in try/except prevents the program from crashing on errors.
+In an introductory course, this is acceptable, but it’s better to provide a meaningful error message instead of a vague "Error occurred".
+
+Input Validation ⚠️
+
+No check for empty or invalid city input.
+For beginners, a simple if not city: check can prevent unnecessary errors before calling the API.
+
+Data Structure Verification ⚠️
+
+The function assumes the API always returns the correct nested dictionary/list structure.
+If the API returns a different structure (e.g., city not found), this causes KeyError or IndexError.
+A beginner-friendly approach: wrap data extraction in a separate try/except to catch these errors.
+
+Meaningful Error Messages ⚠️
+
+Returning a generic string "Error occurred" doesn’t help the user understand the problem.
+Simple print() messages like "Error: Could not fetch weather data" improve clarity without introducing advanced concepts.
+
+Course constraint applied: I applied file and exception handling concepts from Week 11 and mastering error handling in network requests in Week 9: API and External Data.
+
+SECTION 3 - FUNCTION REFINEMENT
+
+Prompt 1: Please show me how to improve the function using only basic try/except blocks and add clear messages for network connection errors and missing weather data.
+
+AI RESPONSE: 
+
+import requests
+
+def safe_weather_data_fetch(city):
+    """
+    Fetch weather data safely using basic error handling.
+    
+    """
+
+    try:
+        # Try to connect to the weather API
+        url = f"http://wttr.in/{city}?format=j1"
+        response = requests.get(url)
+        data = response.json()
+
+        # Try to extract weather data
+        try:
+            current = data['current_condition'][0]
+            weather_info = {
+                'city': city,
+                'temperature': current['temp_C'],
+                'wind_speed': current['windspeedKmph'],
+                'description': current['weatherDesc'][0]['value']
+            }
+            return weather_info
+        except:
+            print("Error: Missing or invalid weather data in response")
+            return None
+
+    except:
+        print("Error: Could not connect to weather service")
+        return None
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
+Prompt 2: Help me improve error handling for invalid user input for the city name.
+
+Updated AI Response: 
+
+import requests
+
+def safe_weather_data_fetch(city):
+    """
+    Fetch weather data safely using basic error handling.
+    
+    >>> safe_weather_data_fetch("")  # doctest: +SKIP
+    Error: City name cannot be empty
+    >>> safe_weather_data_fetch("InvalidCity123")  # doctest: +SKIP
+    Error: Could not connect to weather service
+    """
+    # Input validation
+    if not city:
+        print("Error: City name cannot be empty")
+        return None
+
+    try:
+        # Try to connect to the weather API
+        url = f"http://wttr.in/{city}?format=j1"
+        response = requests.get(url)
+        data = response.json()
+
+        # Try to extract weather data
+        try:
+            current = data['current_condition'][0]
+            weather_info = {
+                'city': city,
+                'temperature': current['temp_C'],
+                'wind_speed': current['windspeedKmph'],
+                'description': current['weatherDesc'][0]['value']
+            }
+            return weather_info
+        except:
+            print("Error: Missing or invalid weather data in response")
+            return None
+
+    except:
+        print("Error: Could not connect to weather service")
+        return None
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
+Prompt 3: How can I safely extract data from the JSON with proper error checks or fallback values if keys are missing?
+
+Updated AI Response: 
+
+import requests
+
+def safe_weather_data_fetch(city):
+    """
+    Fetch weather data with basic error handling 
+
+    >>> safe_weather_data_fetch("")
+    Error: City name cannot be empty
+    >>> safe_weather_data_fetch("InvalidCity123")  # doctest: +SKIP
+    Error: Could not connect to weather service
+    >>> isinstance(safe_weather_data_fetch("London"), dict)
+    True
+    """
+    # Input validation
+    if not city:
+        print("Error: City name cannot be empty")
+        return None
+
+    try:
+        # Attempt to fetch data from the API
+        url = "http://wttr.in/" + city + "?format=j1"
+        response = requests.get(url)
+        data = response.json()
+        
+        # Safely extract data with fallback
+        try:
+            current = data.get('current_condition', [{}])[0]
+            temperature = current.get('temp_C', 'N/A')
+            wind_speed = current.get('windspeedKmph', 'N/A')
+            description_list = current.get('weatherDesc', [{'value': 'N/A'}])
+            description = description_list[0].get('value', 'N/A')
+
+            weather_info = {
+                'city': city,
+                'temperature': temperature,
+                'wind_speed': wind_speed,
+                'description': description
+            }
+            return weather_info
+        except:
+            # Generic error for missing data
+            print("Error: Could not extract weather data from response")
+            return None
+
+    except:
+        # Generic error for network or JSON issues
+        print("Error: Could not connect to weather service")
+        return None
+
+SECTION 4 - MANUAL IMPLEMENTATION:
+
+How can I use a while loop for repeated input until the user gives a valid choice?
+
+AI RESPONSE:
+
+Example: Get a valid menu choice (1–4)
+def get_user_choice():
+    """
+    Repeatedly prompt the user until they enter a valid choice between 1 and 4.
+
+    >>> # This function requires manual testing because of input()
+    >>> # get_user_choice()  # doctest: +SKIP
+    """
+    while True:
+        choice = input("Enter your choice (1-4): ")  # ask for input
+        if choice.isdigit():                          # check if it's a number
+            choice = int(choice)
+            if 1 <= choice <= 4:                      # check range
+                return choice                         # valid, exit loop
+            else:
+                print("Invalid option. Please choose between 1 and 4.")
+        else:
+            print("Invalid input. Please enter a number.")
